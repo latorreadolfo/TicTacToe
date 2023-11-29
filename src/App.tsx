@@ -5,8 +5,9 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  FlatList,
+  Pressable,
 } from 'react-native';
 
 import Snackbar from 'react-native-snackbar';
@@ -102,9 +103,39 @@ function App(): JSX.Element {
   return (
     <SafeAreaView>
       <StatusBar />
-      <View>
-        <Text> TicTacToe </Text>
-      </View>
+      {gameWinner ? (
+        <View style={[styles.playerInfo, styles.winnerInfo]}>
+          <Text style={styles.winnerTxt}>{gameWinner}</Text>
+        </View>
+      ) : (
+        <View
+          style={[
+            styles.playerInfo,
+            isCross ? styles.playerX : styles.playerO,
+          ]}>
+          <Text style={styles.gameTurnTxt}>
+            Player {isCross ? 'X' : 'O'}'s Turn
+          </Text>
+        </View>
+      )}
+      {/*Game Grid */}
+      <FlatList
+        numColumns={3}
+        data={gameState}
+        style={styles.grid}
+        renderItem={({item, index}) => (
+          <Pressable
+            key={index}
+            style={styles.card}
+            onPress={() => onChangeItem(index)}>
+            <Icons name={item} />
+          </Pressable>
+        )}
+      />
+      {/* game action */}
+      <Pressable style={styles.gameBtn} onPress={reloadGame}>
+        <Text>{gameWinner ? 'Start new game' : 'Reload the game'}</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
